@@ -92,7 +92,7 @@ int main (int   argc, char *argv[])
         BSON_APPEND_DOCUMENT(query,"$query",query_and);
         BSON_APPEND_DOCUMENT(query,"$orderby",query_order);
 
-        mongoc_cursor_t* news_cursor = mongoc_collection_find(news_collection,MONGOC_QUERY_NONE,0,0,0,query,NULL,NULL);
+        mongoc_cursor_t* news_cursor = mongoc_collection_find(news_collection,MONGOC_QUERY_NONE,0,10,0,query,NULL,NULL);
 
         bson_t*user_news_array = bson_new();
         const bson_t* news_articles;
