@@ -84,12 +84,12 @@ int main (int   argc, char *argv[])
         bson_t*user_news_array = bson_new();
         const bson_t* news_articles;
         count = 0;
-
         while(mongoc_cursor_next(news_cursor,&news_articles)){
             char str[16];
             const char *key;
             bson_uint32_to_string (count, &key, str, sizeof str);
-            BSON_APPEND_DOCUMENT(user_news_array,key, news_articles);
+            BSON_APPEND_DOCUMENT(user_news_array, key, news_articles);
+            count++;
         }
         bson_t*user_news = bson_new();
 
@@ -101,8 +101,7 @@ int main (int   argc, char *argv[])
         bson_iter_find(&user_prop_it,"_id");
         bson_t* user_update_find = BCON_NEW("_id", BCON_OID(&bson_iter_value(&user_prop_it)->value.v_oid));
         bson_t* user_update_data = bson_new();
-        BSON_APPEND_ARRAY(user_update_data,"$set", user_news);
-
+        BSON_APPEND_DOCUMENT(user_update_data,"$set", user_news);
 
         mongoc_collection_update(user_collection,MONGOC_UPDATE_NONE,user_update_find,user_update_data,NULL,NULL);
 
