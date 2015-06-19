@@ -3,6 +3,14 @@
 #include "config.h"
 #include "log.h"
 
+void printQuery(bson_t* query){
+    size_t len;
+    char *str;
+    str = bson_as_json (query, &len);
+    printf ("\n\n%s\n\n", str);
+    bson_free (str);
+}
+
 
 int main (int   argc, char *argv[])
 {
@@ -78,12 +86,13 @@ int main (int   argc, char *argv[])
         BSON_APPEND_ARRAY(query_and,"$and",queries);
 
         bson_t* query_order = BCON_NEW("relevance",BCON_INT32(-1));
+        bson_t* query_limit = BCON_NEW("limit"    ,BCON_INT32(10));
 
         bson_t* query = bson_new();
         BSON_APPEND_DOCUMENT(query,"$query",query_and);
-        BSON_APPEND_DOCUMENT(query,"$sort",query_order);
+        BSON_APPEND_DOCUMENT(query,"$orderby",query_order);
 
-        mongoc_cursor_t* news_cursor = mongoc_collection_find(news_collection,MONGOC_QUERY_NONE,0,10,0,query_and,NULL,NULL);
+        mongoc_cursor_t* news_cursor = mongoc_collection_find(news_collection,MONGOC_QUERY_NONE,0,0,0,query,NULL,NULL);
 
         bson_t*user_news_array = bson_new();
         const bson_t* news_articles;
@@ -114,6 +123,7 @@ int main (int   argc, char *argv[])
         BSON_APPEND_INT64(user_news,"date",now);
 
         mongoc_collection_insert(news_diggest_collection,MONGOC_INSERT_NONE,user_news,NULL,NULL);
+        mongoc_cursor_destroy(news_cursor);
     }
     mongoc_cursor_destroy (user_cursor);
     mongoc_collection_destroy (user_collection);
