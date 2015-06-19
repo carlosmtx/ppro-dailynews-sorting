@@ -10,6 +10,7 @@ struct Configuration
     char* database;
     char*collection_user;
     char*collection_news;
+    char*collection_news_digest;
     char* connection;
 };
 
@@ -17,6 +18,7 @@ void inline daily_news_initialize_configurations(struct Configuration * config) 
     config->database = "ppro";
     config->collection_user = "user";
     config->collection_news = "news_entry";
+    config->collection_news_digest = "news_digest";
     config->connection = "mongodb://localhost:27017/";
 }
 
